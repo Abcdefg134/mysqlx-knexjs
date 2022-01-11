@@ -1,0 +1,19 @@
+{
+  "name": "knex",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon run index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dayjs": "^1.10.7",
+    "fastify": "^3.25.3",
+    "knex": "^0.95.15",
+    "mysql": "^2.18.1",
+    "nodemon": "^2.0.15"
+  }
+}
