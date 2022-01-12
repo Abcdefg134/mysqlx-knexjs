@@ -23,7 +23,10 @@ fastify.post("/add-car", (req, reply) => {
     .from("cars")
     .onConflict("name")
     .ignore() /*merge()*/
-    .then((res) => reply.send(res))
+    .then((res) => {
+      console.log(res);
+      reply.send(res);
+    })
     .catch((err) => {
       console.log(err);
     });
@@ -54,12 +57,12 @@ fastify.get("/get-bill/:id", (req, reply) => {
       "knex-bill.userName",
       "knex-bill.createAt",
       "cars.name",
-      "cars.price",
-     // { test: "cars1.name" }
+      "cars.price"
+      // { test: "cars1.name" }
     )
     .from("knex-bill")
     .innerJoin("cars", "knex-bill.carId", "cars.id")
-   // .innerJoin("cars1", "knex-bill.id", "cars1.id")
+    // .innerJoin("cars1", "knex-bill.id", "cars1.id")
     .where({ "knex-bill.id": id })
     .then((res) => reply.send(res))
     .catch((err) => reply.send(err));
@@ -101,7 +104,7 @@ fastify.put("/sum-of-bill-in-time", (req, reply) => {
     : dayjs(new Date()).format("YYYY-MM-DD");
   knex
     .sum("cars.price", { as: "SumOfBill" })
-    .count("cars.id", { as: "CountOfBill" })
+    .count("knex-bill.id", { as: "CountOfBill" })
     .from("knex-bill")
     .innerJoin("cars", "knex-bill.carId", "cars.id")
     .whereBetween("knex-bill.createAt", [fromTime, toTime])
@@ -113,7 +116,7 @@ fastify.put("/sum-of-bill-in-time", (req, reply) => {
 fastify.put("/update/:id", (req, reply) => {
   const id = req.params.id;
   const body = {
-    price: req.body.price
+    price: req.body.price,
   };
   knex
     .update(body)
@@ -132,8 +135,8 @@ fastify.delete("/del/:id", (req, reply) => {
     .then((res) => reply.send(res))
     .catch((err) => reply.send(err));
 });
-// get list car
-fastify.get("/all", (req, reply) => {
+// get all car
+fastify.get("/all-car", (req, reply) => {
   knex
     .from("cars")
     // .having("name", "=", "Audi")
@@ -144,8 +147,8 @@ fastify.get("/all", (req, reply) => {
     .catch((err) => reply.send(err));
 });
 
-//search car
-fastify.put("/search", (req, reply) => {
+//search car by name
+fastify.put("/search-car", (req, reply) => {
   const text = req.body.searchValue;
   knex
     .select()

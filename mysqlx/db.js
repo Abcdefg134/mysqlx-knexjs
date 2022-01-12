@@ -1,28 +1,38 @@
 const { default: mysqlx } = require("mysqlx");
 
-const session = {
+const config = {
   host: "localhost",
   port: 33060,
   user: "root",
   password: "123456",
+  schema: "knex",
+};
+const db = async () => {
+  let dictSession;
+  try {
+    dictSession = await mysqlx.getSession(config);
+  } catch (error) {
+    console.log(error);
+  }
+    return dictSession;
+  
 };
 
-const connectToSchema =async ()=>{
-  let dictSession
-  let knexSchema
+const connectToSchema = async () => {
+  let dictSession;
+  let knexSchema;
   try {
-    dictSession = await mysqlx.getSession(session)
+    dictSession = await mysqlx.getSession(config);
     try {
-      knexSchema = await dictSession.getSchema('knex')
+      knexSchema = await dictSession.getSchema("knex");
     } catch (error) {
       console.log(error);
-    } finally {
-      return  knexSchema
     }
+    return knexSchema;
   } catch (error) {
-    console.log(err);
-  } 
-}
+    console.log(error);
+  }
+  return knexSchema;
+};
 
-
-module.exports = { connectToSchema };
+module.exports = { connectToSchema, db };
