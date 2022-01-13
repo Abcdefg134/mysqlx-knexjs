@@ -31,7 +31,7 @@
             "
             for="companycode"
           >
-            Email
+            Company Code
           </label>
           <input
             class="
@@ -51,7 +51,6 @@
             type="text"
             placeholder="Email"
           />
-          
         </div>
         <div class="mb-2">
           <label
@@ -65,7 +64,7 @@
             "
             for="username"
           >
-            Email
+            User Name
           </label>
           <input
             class="
@@ -80,12 +79,11 @@
               leading-tight
               focus:outline-none focus:shadow-outline
             "
-            v-model="email"
+            v-model="username"
             id="username"
             type="text"
             placeholder="Email"
           />
-          
         </div>
         <div class="mb-2">
           <label
@@ -111,7 +109,6 @@
               py-2
               px-3
               text-gray-700
-              
               leading-tight
               focus:outline-none focus:shadow-outline
             "
@@ -120,7 +117,6 @@
             type="password"
             placeholder="******************"
           />
-         
         </div>
         <div class="flex flex-col items-center mt-4">
           <button
@@ -143,29 +139,54 @@
       </form>
       <div></div>
     </div>
+    <popup-loading :showModal="showModal" />
   </div>
 </template>
 <script>
-import {ref} from 'vue'
-import axios from 'axios'
+import { ref } from "vue";
+import axios from "axios";
+import store from "../store/index";
+import router from "../router/index";
+import PopupLoading from "../components/Popuploading";
 export default {
-    setup() {
-        const companycode = ref('')
-        const email = ref('')
-        const password = ref('')
-        const loginBtn = ()=>{
-            // console.log(companycode.value,email.value,password.value);
-            const body = {
-                companycode:companycode.value,
-                email:email.value,
-                password:password.value
-            }
-            axios.post('https://smkoyksapf.execute-api.ap-northeast-1.amazonaws.com/staging/v1/api/company/login',{Headers:{
-                'x-api-key':"rjewp^augexvopbmIszdyh7gfibmu.Sw",
-                "Access-Control-Allow-Origin":"*"
-            }},body).then(res=>console.log(res.data))
-        }
-        return{companycode,email,password,loginBtn}
-    },
-}
+  components: { PopupLoading },
+  setup() {
+    const companycode = ref("");
+    const username = ref("");
+    const password = ref("");
+    const showModal = ref(false);
+    const loginBtn = async () => {
+      // console.log(companycode.value,email.value,password.value);
+      showModal.value = true;
+      const body = {
+        companycode: companycode.value,
+        username: username.value,
+        password: password.value,
+      };
+      let data;
+      try {
+        data = await axios.post(
+          "https://smkoyksapf.execute-api.ap-northeast-1.amazonaws.com/staging/v1/api/company/login",
+          body,
+          {
+            headers: {
+              "x-api-key": "rjewp^augexvopbmIszdyh7gfibmu.Sw",
+            },
+          }
+        );
+        showModal.value = false;
+        if(data.data.code) return false
+        store.commit("GET_TOKEN", data.data.payload.token);
+        router.push("/");
+      } catch (error) {
+        showModal.value = false
+        console.log(error);
+      }
+    };
+    return { companycode, username, password,showModal ,loginBtn };
+  },
+};
 </script>
+<style>
+
+</style>
