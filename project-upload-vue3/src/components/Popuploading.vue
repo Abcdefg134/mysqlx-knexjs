@@ -1,3 +1,11 @@
+
+<script setup>
+import {defineProps} from 'vue'
+  const props = defineProps({
+    showModal:Boolean
+  })
+  console.log(props);
+</script>
 <template>
   <div>
     <div
@@ -57,12 +65,3 @@
     <div v-if="showModal" class="opacity-25 fixed inset-0 z-40 bg-black"></div>
   </div>
 </template>
-
-<script>
-
-export default {
-  props: {
-    showModal: Boolean,
-  },
-};
-</script>

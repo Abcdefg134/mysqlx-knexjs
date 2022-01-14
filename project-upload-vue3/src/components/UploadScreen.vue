@@ -1,3 +1,84 @@
+<script setup>
+import PopupLoading from "../components/Popuploading.vue";
+import { ref } from "vue";
+import axios from "axios";
+import store from "../store/index";
+
+axios.defaults.baseURL = "api";
+
+const file = ref();
+const showModal = ref(false);
+
+const onchangFile = (event) => {
+  file.value = event.target.files[0];
+  console.log(file.value);
+};
+
+const token = store.getters.getToken;
+const uploadBtn = async () => {
+  if (!file.value) {
+    alert("Bạn chưa import file");
+    return false;
+  }
+  showModal.value = true;
+  const body = {
+    file: file.value.name,
+    sizefile: file.value.size,
+  };
+  let createpresignedRequest;
+  try {
+    createpresignedRequest = await axios.post(
+      "https://smkoyksapf.execute-api.ap-northeast-1.amazonaws.com/staging/v1/api/s3/createpresigned",
+      body,
+      {
+        headers: {
+          Authorization: "Bearer " + token,
+          "x-api-key": "rjewp^augexvopbmIszdyh7gfibmu.Sw",
+        },
+      }
+    );
+    console.log(createpresignedRequest);
+    const code = createpresignedRequest.data.code;
+    if (code !== 0) {
+      alert("Lỗi không xác định");
+      showModal.value = false;
+      return false;
+    }
+    //const imgBase64 = await getBase64(file.value);
+    const signedUrl = createpresignedRequest.data.payload.signedUrl;
+    try {
+      // const formData = new FormData()
+      // formData.append('file',file.value.name)
+      // formData.append('sizefile',file.value.size)
+      // formData.append('src',file.value)
+      const uploadFile = await axios.put(signedUrl, file.value, {
+        headers: {
+          "Content-Type": file.value.type,
+        },
+      });
+      showModal.value = false;
+      if (uploadFile.statusText === "OK") {
+        alert("Upload thành công");
+      }
+      console.log(uploadFile);
+    } catch (error) {
+      showModal.value = false;
+      console.log(error);
+    }
+  } catch (error) {
+    showModal.value = false;
+    console.log(error);
+  }
+};
+// const getBase64 = (file) => {
+//   return new Promise((resolve, reject) => {
+//     const reader = new FileReader();
+//     reader.readAsDataURL(file);
+//     reader.onload = () => resolve(reader.result);
+//     reader.onerror = (err) => reject(err);
+//   });
+// };
+</script>
 <template>
   <div class="bg-blue-200 min-h-screen">
     <div class="grid grid-rows-3 min-h-screen">
@@ -57,93 +138,6 @@
         </div>
       </div>
     </div>
-    <popup-loading :showModal="showModal" />
+    <PopupLoading :showModal="showModal" />
   </div>
 </template>
-
-<script>
-import PopupLoading from "../components/Popuploading";
-import { ref } from "vue";
-import axios from "axios";
-import store from "../store/index";
-
-axios.defaults.baseURL = "api";
-export default {
-  components: { PopupLoading },
-  setup() {
-    const file = ref();
-    const showModal = ref(false);
-
-    const onchangFile = (event) => {
-      file.value = event.target.files[0];
-      console.log(file.value);
-    };
-    
-    const token = store.getters.getToken;
-    const uploadBtn = async () => {
-      if (!file.value) {
-        alert("Bạn chưa import file");
-        return false;
-      }
-      showModal.value = true;
-      const body = {
-        file: file.value.name,
-        sizefile: file.value.size,
-      };
-      let createpresignedRequest;
-      try {
-        createpresignedRequest = await axios.post(
-          "https://smkoyksapf.execute-api.ap-northeast-1.amazonaws.com/staging/v1/api/s3/createpresigned",
-          body,
-          {
-            headers: {
-              Authorization: "Bearer " + token,
-              "x-api-key": "rjewp^augexvopbmIszdyh7gfibmu.Sw",
-            },
-          }
-        );
-        console.log(createpresignedRequest);
-        const code = createpresignedRequest.data.code;
-        if (code !== 0) {
-          alert("Lỗi không xác định");
-          showModal.value = false;
-          return false;
-        }
-        //const imgBase64 = await getBase64(file.value);
-        const signedUrl = createpresignedRequest.data.payload.signedUrl;
-        try {
-          // const formData = new FormData()
-          // formData.append('file',file.value.name)
-          // formData.append('sizefile',file.value.size)
-          // formData.append('src',file.value)
-          const uploadFile = await axios.put(signedUrl, file.value, {
-            headers: {
-              "Content-Type": file.value.type,
-            },
-          });
-          showModal.value = false;
-          if (uploadFile.statusText === "OK") {
-            alert("Upload thành công");
-          }
-          console.log(uploadFile);
-        } catch (error) {
-          showModal.value = false;
-          console.log(error);
-        }
-      } catch (error) {
-        showModal.value = false;
-        console.log(error);
-      }
-    };
-    const getBase64 =  (file)=> {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = (err) => reject(err);
-      });
-    }
-    return { file, showModal,getBase64, onchangFile, uploadBtn };
-  },
-};
-</script>
