@@ -2,7 +2,7 @@
 FROM node:13-alpine as build-stage
 WORKDIR /app
 COPY . .
-RUN npm install  ## các bạn có thể dùng yarn install .... tuỳ nhu cầu nhé
+RUN npm install
 RUN npm run build
 
 # production stage

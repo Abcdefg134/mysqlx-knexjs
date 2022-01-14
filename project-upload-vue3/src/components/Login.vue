@@ -180,7 +180,6 @@ const loginBtn = async () => {
       </form>
       <div></div>
     </div>
-    <PopupLoading :showModal="showModal" />
-    
+    <component :is="PopupLoading" :showModal="showModal" />
   </div>
 </template>
