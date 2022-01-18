@@ -1,0 +1,432 @@
+openapi: 3.0.0
+info:
+  description: |
+    This is API design for NTV Project
+  version: "1.0.0"
+  title: 動画視聴システム開発
+  contact:
+    email: k.ryu@saishunkansys.com
+servers:
+  # Added by API Auto Mocking Plugin
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/ssvietnam/NTV/1.0.0
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/ssvietnam/ntv/1.0.0
+tags:
+  - name: admin
+    description: api for admin
+  - name: member
+    description: |
+      api for member web and app
+paths:
+  /member/login:
+    post:
+      tags:
+        - member
+      summary: member login
+      description: |
+        API login user thông thường
+      security:
+        - api_key: []
+      requestBody:
+        description: |
+          Thông tin user login thông thường
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemberLoginRequest'
+      responses:
+        '200':
+          description: |
+            ログイン成功 (login success)
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    required:
+                      - payload
+                    properties:
+                      payload:
+                        type: object
+                        allOf:
+                          - $ref: '#/components/schemas/Member'
+                          - type: object
+                            required:
+                              - token
+                            properties:
+                              token:
+                                type: string
+                                format: string
+                                description: Bearer token
+              example: 
+                code: 0
+                message: 'string'
+                payload:
+                  id: 11
+                  companycode: '000001'
+                  username: 'user001'
+                  email: 'test@mail.com'
+                  fullname: '管理者'
+                  token: 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaXNfc2FsZSI6MCwiaXNfaG90ZWwiOjEsImlzX2FnZW50IjoxLCJpc19tZW1iZXIiOjEsInN0YXR1cyI6MSwic2hvcGNvZGUiOiIwMDAwMDEiLCJtYWlsIjoic2hvcEBzYWlzeXN0ZW0udm4iLCJ0b2tlbiI6bnVsbCwibmFtZSI6IuWGjeaYpemkqCIsImJhbmt0eXBlIjoxLCJiYW5rY29kZSI6bnVsbCwiYmFua25hbWUiOm51bGwsImJyYW5jaGNvZGUiOm51bGwsImJyYW5jaG5hbWUiOm51bGwsImJhbmtudW0iOiLlj6Pluqfnlarlj7ciLCJiYW5rb3duZXIiOiLlkI3nvqnkuroiLCJpc19zaG9wIjoxLCJkYXRldGltZSI6MTYzMjc2NDQxMTgzNiwiaWF0IjoxNjMyNzY0NDExLCJhdWQiOiJzc3YiLCJpc3MiOiIxMjcuMC4wLjEifQ.dCj5IrVaKic0S_8ObvmIugBDU5N7rpL7SOK5F17bRLj7AUk63x3udhTZDBYDZAfkHDo5siBcQz2ypAfX3jb5Ag'
+              
+        '400':
+          description: |
+            ログイン失敗 (login fail)
+          content:
+            application/json:
+              schema:
+                allOf:
+                 - $ref: '#/components/schemas/CommonResponse'
+                 - type: object
+                   properties:
+                    code:
+                      enum:
+                        - 400 # Input not valid
+                        - 901 # Error bussiness
+                    message:
+                      enum:
+                        - Company code không được để trống 
+                        - Username không được để trống
+                        - Password không được để trống
+                        - Thông tin đăng nhập không chính xác
+
+  /member/checklogin:
+    get:
+      tags:
+        - member
+      summary: Check và get thông tin Login App
+      description: |
+        Check và get thông tin Login App
+      security:
+        - api_key: []
+        - bearerAuth: []
+      responses:
+        '200':
+          description: |
+            check login success
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    required:
+                      - payload
+                    properties:
+                      payload:
+                        type: object
+                        allOf:
+                          - $ref: '#/components/schemas/Member'
+                          - type: object
+                            required:
+                              - token
+                            properties:
+                              token:
+                                type: string
+                                format: string
+                                description: Bearer token
+              example: 
+                code: 0
+                message: 'string'
+                payload:
+                  id: 11
+                  companycode: '000001'
+                  username: 'user001'
+                  email: 'test@mail.com'
+                  fullname: '管理者'
+                  token: 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaXNfc2FsZSI6MCwiaXNfaG90ZWwiOjEsImlzX2FnZW50IjoxLCJpc19tZW1iZXIiOjEsInN0YXR1cyI6MSwic2hvcGNvZGUiOiIwMDAwMDEiLCJtYWlsIjoic2hvcEBzYWlzeXN0ZW0udm4iLCJ0b2tlbiI6bnVsbCwibmFtZSI6IuWGjeaYpemkqCIsImJhbmt0eXBlIjoxLCJiYW5rY29kZSI6bnVsbCwiYmFua25hbWUiOm51bGwsImJyYW5jaGNvZGUiOm51bGwsImJyYW5jaG5hbWUiOm51bGwsImJhbmtudW0iOiLlj6Pluqfnlarlj7ciLCJiYW5rb3duZXIiOiLlkI3nvqnkuroiLCJpc19zaG9wIjoxLCJkYXRldGltZSI6MTYzMjc2NDQxMTgzNiwiaWF0IjoxNjMyNzY0NDExLCJhdWQiOiJzc3YiLCJpc3MiOiIxMjcuMC4wLjEifQ.dCj5IrVaKic0S_8ObvmIugBDU5N7rpL7SOK5F17bRLj7AUk63x3udhTZDBYDZAfkHDo5siBcQz2ypAfX3jb5Ag'
+        '400':
+          description: |
+            check login fail
+          content:
+            application/json:
+              schema:
+                allOf:
+                 - $ref: '#/components/schemas/CommonResponse'
+                 - type: object
+                   properties:
+                    code:
+                      enum:
+                        - 901 # Error bussiness
+                    message:
+                      enum:
+                        - Tài khoản chưa thực hiện login hoặc thông tin không hợp lệ # Code 901
+
+  /member/logout:
+    delete:
+      tags:
+        - member
+      summary: Logout App
+      description: |
+        Logout App
+      security:
+        - api_key: []
+        - bearerAuth: []
+      responses:
+        '200':
+          description: |
+            logout success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResponse'
+        '400':
+          description: |
+            logout fail
+          content:
+            application/json:
+              schema:
+                allOf:
+                 - $ref: '#/components/schemas/CommonResponse'
+                 - type: object
+                   properties:
+                    code:
+                      enum:
+                        - 901 # Error bussiness
+                    message:
+                      enum:
+                        - Logout không thành công # Code 901
+
+  /member/devicetoken:
+    put:
+      tags:
+        - member
+      summary: Thực hiện add device token để thực hiện put notification
+      description: |
+        Thực hiện add device token để thực hiện put notification
+      security:
+        - api_key: []
+        - bearerAuth: []
+      requestBody:
+        description: |
+          device infomation
+        content:
+          application/json:
+            schema:
+              required:
+                - devicetoken
+              properties:
+                devicetoken:
+                  type: string
+                  format: string
+                  maxLength: 256
+                useragent:
+                  type: string
+                  format: string
+                  maxLength: 256
+      responses:
+        '200':
+          description: |
+            logout success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResponse'
+        '400':
+          description: |
+            logout fail
+          content:
+            application/json:
+              schema:
+                allOf:
+                 - $ref: '#/components/schemas/CommonResponse'
+                 - type: object
+                   properties:
+                    code:
+                      enum:
+                        - 901 # Error bussiness
+                    message:
+                      enum:
+                        - Device token không được để trống # Code 400
+                        - Device token không hợp lệ # Code 400
+                        - Use-Agent không hợp lệ # Code 400
+                        - Thực hiện add device token để thực hiện put notification không thành công # Code 901
+    post:
+      tags:
+        - member
+      summary: Logout App
+      description: |
+        Logout App
+      security:
+        - api_key: []
+        - bearerAuth: []
+      requestBody:
+        description: |
+          device token
+        content:
+          application/json:
+            schema:
+              required:
+                - devicetoken
+              properties:
+                devicetoken:
+                  type: string
+                  format: string
+                  maxLength: 256
+      responses:
+        '200':
+          description: |
+            logout success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResponse'
+        '400':
+          description: |
+            logout fail
+          content:
+            application/json:
+              schema:
+                allOf:
+                 - $ref: '#/components/schemas/CommonResponse'
+                 - type: object
+                   properties:
+                    code:
+                      enum:
+                        - 901 # Error bussiness
+                    message:
+                      enum:
+                        - Logout không thành công # Code 901
+
+  /member/setting:
+    get:
+      tags:
+        - member
+      summary: Get thông tin phiên bản app hiện tại
+      description: |
+        Get thông tin phiên bản app hiện tại
+      security:
+        - api_key: []
+      responses:
+        '200':
+          description: |
+            check login success
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    required:
+                      - payload
+                    properties:
+                      payload:
+                        type: object
+                        properties:
+                          appVersions:
+                            type: array
+                            items:
+                              properties:
+                                type:
+                                  type: string
+                                  format: string
+                                version:
+                                  type: number
+                                  format: integer
+                                
+              example: 
+                code: 0
+                message: ''
+                payload:
+                  appVersions:
+                    - type: ios
+                      version: 1
+                    - type: android
+                      version: 1
+                
+        '400':
+          description: |
+            check login fail
+          content:
+            application/json:
+              schema:
+                allOf:
+                 - $ref: '#/components/schemas/CommonResponse'
+                 - type: object
+                   properties:
+                    code:
+                      enum:
+                        - 901 # Error bussiness
+                    message:
+                      enum:
+                        - Không lấy được thông tin setting ứng dụng # Code 901
+
+components:
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
+    bearerAuth: # in header or cookie
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+  # mail: '/^[\w.!#$%&’*+\/=?^`{|}-]+@[\w-]+(?:\.[\w-]+)*\b/'
+  # date: '/^(\d{4})\/(0[1-9]|1[0-2])\/(0[1-9]|[1-2][0-9]|3[0-1])$/'
+  # status: '/^[0-9]{1}/'
+    CommonResponse:
+      $ref: '#/components/schemas/CommonResult'
+
+    CommonResult:
+      type: object
+      properties:
+        code:
+          type: number
+          format: integer
+        message:
+          type: string
+          format: string
+  
+    MemberLoginRequest:
+      type: object
+      required:
+        - companycode
+        - username
+        - password
+      properties:
+        companycode:
+          description: |
+          
+          type: string
+          format: string
+          maxLength: 6
+        username:
+          description: |
+          
+          type: string
+          format: string
+          maxLength: 100
+        password:
+          description: |
+          
+          type: string
+          format: password
+          maxLength: 16
+          minLength: 8
+      example:
+        companycode: '000001'
+        username: 'user001'
+        password: 'Ssv@1234'
+    
+    Member:
+      type: object
+      properties:
+        id:
+          type: number
+          format: integer
+        companycode:
+          type: string
+          format: string
+        username:
+          type: string
+          format: string
+        fullname:
+          type: string
+          format: string
+        email:
+          type: string
+          format: mail

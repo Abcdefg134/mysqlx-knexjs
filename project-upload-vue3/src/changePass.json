@@ -1,0 +1,122 @@
+{
+    "path": {
+        "/member/user/{id}/change-password": {
+            "put": {
+                "tags": [
+                    "member"
+                ],
+                "summary": "Member change password",
+                "operationId": "memberChangePassword",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of user",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Change Password object",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/schemas/MemberChangePassword"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid Input"
+                    },
+                    "200": {
+                        "description": "Change Password Success"
+                    }
+                },
+                "security": [
+                    //(A and B) OR (C and D)  
+                    {
+                        "security1": [],
+                        "security2": []
+                    },
+                    {
+                        "security3": [],
+                        "security4": []
+                    }
+                ]
+            }
+        },
+        "/member/forget-pasword": {
+            "post": {
+                "tags": [
+                    "member"
+                ],
+                "summary": "Member forget password",
+                "operationId": "memberForgetPassword",
+                "requestBody": {
+                    "description": "Forget Password Object",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/schemas/ForgetPassword"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Send request reset password success"
+                    },
+                    "404": {
+                        "description": "Fail"
+                    }
+                },
+                "security": [] // no security
+            }
+        }
+    },
+    "schemas": {
+        "MemberChangePassword": {
+            "type": "object",
+            "required": [
+                "currentPassword",
+                "newPassword"
+            ],
+            "properties": {
+                "curentPassword": {
+                    "type": "string",
+                    "minLength": 6,
+                    "maxLength": 15
+                },
+                "newPassword": {
+                    "type": "string",
+                    "minLength": 6,
+                    "maxLength": 15
+                }
+            },
+            "xml": {
+                "name": "MemberChangePassword"
+            }
+        },
+        "ForgetPassword": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "format": "email",
+                    "maxLength": 30
+                }
+            },
+            "xml": {
+                "name": "ForgetPassword"
+            }
+        }
+    }
+}
