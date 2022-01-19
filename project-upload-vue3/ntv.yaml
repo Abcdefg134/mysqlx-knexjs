@@ -474,7 +474,7 @@ paths:
     get:
       tags:
         - member
-      summary: Lấy tất cả thông báo của user thông thường
+      summary: Lấy tất cả thông báo của user
       description: |
         Lấy thông báo của user thông thường
       security:
@@ -537,9 +537,9 @@ paths:
     get:
       tags:
         - member
-      summary: Xem chi tiết thông báo của user thông thường
+      summary: Xem chi tiết thông báo của user
       description: | 
-        Xem chi tiết thông báo của user thông thường
+        Xem chi tiết thông báo của user
       security:
         - api_key: []
         - bearerAuth: []
@@ -662,6 +662,62 @@ paths:
                         enum:
                           - Lấy danh sách báo cáo không thành công # Code 901
 
+    post:
+      tags:
+        - member
+      summary: member tạo báo cáo
+      description:  |
+        member tạo báo cáo
+      security:
+        - api_key: []
+        - bearerAuth: []
+      requestBody:
+        description:  |
+          nội dung báo cáo và fileId
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemberCreateReport'
+      responses:
+        '200':
+          description:  |
+            create report success
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      code:
+                        enum:
+                          - 200
+                      message:
+                        enum:
+                          - Tạo mới báo cáo thành công
+        '400':
+          description:  |
+            create report fail
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      code:
+                        enum:
+                          - 400 # Input not valid
+                          - 901 # Error bussiness
+                      message:
+                        enum:
+                          - Content không được để trống # Code 400
+                          - FileId không hợp lệ # Code 400
+                          - Tạo mới thất bại # Code 901
+
+      
+
+
   /member/reports/{id}:
     get:
       tags:
@@ -727,6 +783,70 @@ paths:
                         enum:
                           - Lấy báo cáo không thành công # Code 901  
 
+    put:
+      tags:
+        - member
+      summary:  member cập nhật báo cáo
+      description:  |
+        member cập nhật báo cáo
+      security:
+        - api_key:  []
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: id of report
+          required: true
+          schema:
+            type: number
+            format: integer
+      requestBody:
+        description:  |
+          new content of report
+        content:
+          application/json:
+            schema:
+              required:
+                - newContent
+              properties:
+                - newContent:
+                    type: string
+                    format: string
+      responses:
+        '200':
+          description:  |
+            update report success
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      code:
+                        enum:
+                          - 200
+                      message:
+                        enum:
+                          - Tạo mới báo cáo thành công
+        '400':
+          description:  |
+            update report fail
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      code:
+                        enum:
+                          - 400 # Input not valid
+                          - 901 # Error bussiness
+                      message:
+                        enum:
+                          - Content không được để trống # Code 400
+                          - Cập nhật báo cáo thất bại # Code 901
 
 components:
   securitySchemes:
@@ -882,3 +1002,16 @@ components:
         updateAt:
           type: string
           format: date
+    
+    MemberCreateReport:
+      type: object
+      required:
+        - fileId
+        - content
+      properties:
+        fileId:
+          type: number
+          format: integer
+        content:
+          type: string
+          format: string
