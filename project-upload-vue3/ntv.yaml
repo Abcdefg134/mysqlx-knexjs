@@ -373,7 +373,7 @@ paths:
       responses:
         '200':
           description: |
-            リクエストの送信リセットパスワードの成功 (send request forget password success )
+           send request forget password success
           content:
             application/json:
               schema:
@@ -419,7 +419,7 @@ paths:
       parameters:
       - name: id
         in: path
-        description: ID of user'link request change password
+        description: id of user 
         required: true
         schema:
           type: string
@@ -460,11 +460,13 @@ paths:
                       code:
                         enum:
                           - 901 # Error bussiness
-                          - 400 # Input nnot valid
+                          - 400 # Input not valid
                       message:
                         enum:
                           - Mật khẩu không được để trống # Code 400
                           - Mật khẩu không đúng định dạng # Code 400
+                          - Link không hợp lệ # Code 400
+                          - Link đã hết hạn # Code 400
                           - Đổi mật khẩu thất bại # Code 901
                       
           
@@ -562,10 +564,12 @@ components:
       type: object
       required:
         - newPassword
+        - token
       properties:
         newPassword:
           type: string
           minLength: 8
           maxLength: 16
-      example:
-        newPassword: 'Ssv@1234'
+        token:
+          type: string
+          format: string
