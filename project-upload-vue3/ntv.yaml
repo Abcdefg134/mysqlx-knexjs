@@ -809,7 +809,7 @@ paths:
               required:
                 - newContent
               properties:
-                - newContent:
+                newContent:
                     type: string
                     format: string
       responses:
