@@ -500,7 +500,7 @@ paths:
                             type: array
                             items:
                               allOf:
-                                - $ref: '#/components/schemas/Notices'
+                                - $ref: '#/components/schemas/Notice'
               example:
                 code: 200
                 message: 'string'
@@ -528,11 +528,9 @@ paths:
                     properties:
                       code:
                         enum:
-                          - 400 # Input valid
                           - 901 # Error bussiness
                       message:
                         enum:
-                          - UserId không được để trống # Code 400
                           - Lấy danh sách thông báo không thành công # Code 901
 
   /member/notices/{id}:
@@ -571,7 +569,7 @@ paths:
                         properties:
                           notice:
                             allOf:
-                              - $ref: '#/components/schemas/Notices'
+                              - $ref: '#/components/schemas/Notice'
               example:
                 code: 200
                 message: 'string'
@@ -594,12 +592,81 @@ paths:
                     properties:
                       code:
                         enum:
-                          - 400 # Input valid
                           - 901 # Error bussiness
                       message:
                         enum:
-                          - UserId không được để trống # Code 400
                           - Lấy danh sách thông báo không thành công # Code 901        
+
+  /member/reports:
+    get:
+      tags:
+        - member
+      summary: Lấy danh sách báo cáo của user thông thường
+      description: |
+        Lấy danh sách báo cáo của user thông thường
+      security:
+        - api_key: []
+        - bearerAuth: []
+      responses:
+        '200':
+          description: |
+            get report success
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    required:
+                      - payload
+                    properties:
+                      payload:
+                        type: object
+                        properties:
+                          listReports:
+                            type: array
+                            items:
+                              allOf:
+                                - $ref: '#/components/schemas/Report'
+              example:
+                code: 200
+                message: 'string'
+                payload:
+                  listReports:
+                    - id: 1
+                      userId: 1
+                      fileId: 2
+                      content: 'string'
+                      createAt: '2022-01-02'
+                      updateAt: '2022-01-02'
+                    - id: 2
+                      userId: 1
+                      fileId: 3
+                      content: 'string'
+                      createAt: '2022-01-02'
+                      updateAt: '2022-01-02'
+        '400':
+          description: |
+            get notice fail
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      code:
+                        enum:
+                          - 901 # Error bussiness
+                      message:
+                        enum:
+                          - Lấy danh sách báo cáo không thành công # Code 901
+
+  /member/reports/{id}:
+    get:
+      tags:
+        - member
+      summary: Xem chi   
 
 components:
   securitySchemes:
@@ -703,7 +770,7 @@ components:
           type: string
           format: string
 
-    Notices: 
+    Notice: 
       type: object
       required:
         - id
@@ -726,4 +793,32 @@ components:
         createAt:
           type: string
           format: date
-      
+    
+    Report:
+      type: object
+      required:
+        - id
+        - userId
+        - fileId
+        - content
+        - createAt
+        - updateAt
+      properties:
+        id:
+          type: number
+          format: integer
+        userId:
+          type: number
+          format: integer
+        fileId:
+          type: number
+          format: integer
+        content:
+          type: string
+          format: string
+        createAt:
+          type: string
+          format: date
+        updateAt:
+          type: string
+          format: date
