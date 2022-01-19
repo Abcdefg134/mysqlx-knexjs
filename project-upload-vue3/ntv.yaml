@@ -480,18 +480,6 @@ paths:
       security:
         - api_key: []
         - bearerAuth: []
-      requestBody:
-        description: |
-          id of user
-        content:
-          application/json:
-            schema:
-              required:
-                - userId
-              properties:
-                userId:
-                  type: number
-                  format: integer
       responses:
         '200':
           description: |
@@ -520,10 +508,12 @@ paths:
                   listNotices:
                     - id: 1
                       userId: 1
+                      title: 'string'
                       content: 'string'
                       createAt: "2021-01-18"
                     - id: 2
                       userId: 1
+                      title: 'string'
                       content: 'string'
                       createAt: "2021-01-18"
         '400':
@@ -563,18 +553,6 @@ paths:
           schema:
             type: number
             format: integer
-      requestBody:
-        description: |
-          userId
-        content:
-          application/json:
-            schema:
-              required:
-                - userId
-              properties:
-                userId:
-                  type: number
-                  format: integer
       responses:
         '200':
           description: |
@@ -601,6 +579,7 @@ paths:
                   notice:
                     id: 1
                     userId: 2
+                    title: 'string'
                     content: 'string'
                     createAt: '2022-01-18'
         '400':
@@ -738,6 +717,9 @@ components:
         userId:
           type: number
           format: integer
+        title:
+          type: string
+          format: string
         content:
           type: string
           format: string
