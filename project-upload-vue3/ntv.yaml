@@ -726,7 +726,7 @@ paths:
                       message:
                         enum:
                           - Lấy báo cáo không thành công # Code 901  
-
+xc
 
 components:
   securitySchemes:
