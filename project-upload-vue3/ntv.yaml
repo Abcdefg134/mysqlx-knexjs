@@ -425,7 +425,7 @@ paths:
           type: string
       requestBody:
         description: |
-          Mật khẩu mới của user thông thường
+          Change password body
         content:
           application/json:
             schema:
