@@ -592,7 +592,8 @@ paths:
                         type: object
                         properties:
                           notice:
-                            - $ref: '#/components/schemas/Notices'
+                            allOf:
+                              - $ref: '#/components/schemas/Notices'
               example:
                 code: 200
                 message: 'string'
