@@ -464,8 +464,10 @@ paths:
                           - 400 # Input not valid
                       message:
                         enum:
-                          - Mật khẩu không được để trống # Code 400
-                          - Mật khẩu không đúng định dạng # Code 400
+                          - Mật khẩu mới không được để trống # Code 400
+                          - Mật khẩu mới không đúng định dạng # Code 400
+                          - Mật khẩu hiện tại không được để trống # Code 400
+                          - Mật khẩu hiện tại không đúng định dạng # Code 400
                           - Link không hợp lệ # Code 400
                           - Link đã hết hạn # Code 400
                           - Đổi mật khẩu thất bại # Code 901
@@ -715,9 +717,6 @@ paths:
                           - FileId không hợp lệ # Code 400
                           - Tạo mới thất bại # Code 901
 
-      
-
-
   /member/reports/{id}:
     get:
       tags:
@@ -939,13 +938,18 @@ components:
     MemberChangePassword:
       type: object
       required:
+        - currentPassword
         - newPassword
         - token
       properties:
+        currentPassword:
+          type: string
+          minLength:  8
+          maxLength:  16
         newPassword:
           type: string
-          minLength: 8
-          maxLength: 16
+          minLength:  8
+          maxLength:  16
         token:
           type: string
           format: string
