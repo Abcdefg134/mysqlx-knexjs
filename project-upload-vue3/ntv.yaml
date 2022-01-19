@@ -545,7 +545,7 @@ paths:
                           - UserId không được để trống # Code 400
                           - Lấy danh sách thông báo không thành công # Code 901
 
-  /member/notices/:id:
+  /member/notices/{id}:
     get:
       tags:
         - member
