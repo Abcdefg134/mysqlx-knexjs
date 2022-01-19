@@ -354,6 +354,122 @@ paths:
                       enum:
                         - Không lấy được thông tin setting ứng dụng # Code 901
 
+  /member/forget-password: 
+    post: 
+      tags:
+        - member
+      summary: Quên mật khẩu của người dùng thông thường
+      description: |
+        Quên mật khẩu của người dùng thông thường
+      security:
+        - api_key: []
+      requestBody:
+        description: |
+          Email của User thông thường
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemberForgetPassword'
+      responses:
+        '200':
+          description: |
+            リクエストの送信リセットパスワードの成功 (send request forget password success )
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      code:
+                        enum: 
+                          - 200
+                      message:
+                        enum:
+                          - Gửi yêu cầu đổi mật khẩu thành công
+        '400':
+          description: |
+            Send request fail
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      code:
+                        enum:
+                          - 400 # Input not valid
+                          - 901 # Error bussiness
+                      message:
+                        enum:
+                          - Email không được để trống # Code 400
+                          - Email không đúng định dạng # Code 400
+                          - Gửi yêu cầu không thành công # Code 901
+  
+  /member/user/{id}/change-password:
+    put:
+      tags:
+        - member
+      summary: Thay đổi mật khẩu của người dùng thông thường
+      description: |
+        Thay đổi mật khẩu của người dùng thông thường
+      security:
+        - api_key: []
+      parameters:
+      - name: id
+        in: path
+        description: ID of user'link request change password
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: |
+          Mật khẩu mới của user thông thường
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemberChangePassword'
+      responses:
+        '200':
+          description: |
+            Change password success
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      code:
+                        enum:
+                          - 200
+                      message: 
+                        enum:
+                          - Đổi mật khẩu thành công
+        '400':
+          description: |
+            Change password fail
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      code:
+                        enum:
+                          - 901 # Error bussiness
+                          - 400 # Input nnot valid
+                      message:
+                        enum:
+                          - Mật khẩu không được để trống # Code 400
+                          - Mật khẩu không đúng định dạng # Code 400
+                          - Đổi mật khẩu thất bại # Code 901
+                      
+          
+      
+
 components:
   securitySchemes:
     api_key:
@@ -430,3 +546,26 @@ components:
         email:
           type: string
           format: mail
+    
+    MemberForgetPassword:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          format: mail
+      example:
+        email: 'Ssv@1234'
+
+    MemberChangePassword:
+      type: object
+      required:
+        - newPassword
+      properties:
+        newPassword:
+          type: string
+          minLength: 8
+          maxLength: 16
+      example:
+        newPassword: 'Ssv@1234'
