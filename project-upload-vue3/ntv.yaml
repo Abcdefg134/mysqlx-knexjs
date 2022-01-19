@@ -666,7 +666,7 @@ paths:
     get:
       tags:
         - member
-      summary: Xem chi   
+      summary: Xem chi tiết báo cáo của user thông thường
 
 components:
   securitySchemes:
