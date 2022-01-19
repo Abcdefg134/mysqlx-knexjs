@@ -417,12 +417,13 @@ paths:
       security:
         - api_key: []
       parameters:
-      - name: id
-        in: path
-        description: id of user 
-        required: true
-        schema:
-          type: string
+        - name: id
+          in: path
+          description: id of user 
+          required: true
+          schema:
+            type: number
+            format: integer
       requestBody:
         description: |
           Change password body
@@ -469,8 +470,156 @@ paths:
                           - Link đã hết hạn # Code 400
                           - Đổi mật khẩu thất bại # Code 901
                       
-          
-      
+  /member/notices:
+    get:
+      tags:
+        - member
+      summary: Lấy tất cả thông báo của user thông thường
+      description: |
+        Lấy thông báo của user thông thường
+      security:
+        - api_key: []
+        - bearerAuth: []
+      requestBody:
+        description: |
+          id of user
+        content:
+          application/json:
+            schema:
+              required:
+                - userId
+              properties:
+                userId:
+                  type: number
+                  format: integer
+      responses:
+        '200':
+          description: |
+            get notices success
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    required:
+                      - payload
+                    properties:
+                      payload:
+                        type: object
+                        properties:
+                          listNotices:
+                            type: array
+                            items:
+                              allOf:
+                                - $ref: '#/components/schemas/Notices'
+              example:
+                code: 200
+                message: 'string'
+                payload:
+                  listNotices:
+                    - id: 1
+                      userId: 1
+                      content: 'string'
+                      createAt: "2021-01-18"
+                    - id: 2
+                      userId: 1
+                      content: 'string'
+                      createAt: "2021-01-18"
+        '400':
+          description: |
+            get notices fail
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      code:
+                        enum:
+                          - 400 # Input valid
+                          - 901 # Error bussiness
+                      message:
+                        enum:
+                          - UserId không được để trống # Code 400
+                          - Lấy danh sách thông báo không thành công # Code 901
+
+  /member/notices/:id:
+    get:
+      tags:
+        - member
+      summary: Xem chi tiết thông báo của user thông thường
+      description: | 
+        Xem chi tiết thông báo của user thông thường
+      security:
+        - api_key: []
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: id of notice
+          required: true
+          schema:
+            type: number
+            format: integer
+      requestBody:
+        description: |
+          userId
+        content:
+          application/json:
+            schema:
+              required:
+                - userId
+              properties:
+                userId:
+                  type: number
+                  format: integer
+      responses:
+        '200':
+          description: |
+            get notice success
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    required:
+                      - payload
+                    properties:
+                      payload:
+                        type: object
+                        properties:
+                          notice:
+                            - $ref: '#/components/schemas/Notices'
+              example:
+                code: 200
+                message: 'string'
+                payload:
+                  notice:
+                    id: 1
+                    userId: 2
+                    content: 'string'
+                    createAt: '2022-01-18'
+        '400':
+          description: |
+            get notice fail
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      code:
+                        enum:
+                          - 400 # Input valid
+                          - 901 # Error bussiness
+                      message:
+                        enum:
+                          - UserId không được để trống # Code 400
+                          - Lấy danh sách thông báo không thành công # Code 901        
 
 components:
   securitySchemes:
@@ -573,3 +722,25 @@ components:
         token:
           type: string
           format: string
+
+    Notices: 
+      type: object
+      required:
+        - id
+        - userId
+        - content
+        - createAt
+      properties:
+        id:
+          type: number
+          format: integer
+        userId:
+          type: number
+          format: integer
+        content:
+          type: string
+          format: string
+        createAt:
+          type: string
+          format: date
+      
