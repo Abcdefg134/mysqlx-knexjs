@@ -595,7 +595,7 @@ paths:
                           - 901 # Error bussiness
                       message:
                         enum:
-                          - Lấy danh sách thông báo không thành công # Code 901        
+                          - Lấy thông báo không thành công # Code 901        
 
   /member/reports:
     get:
@@ -667,6 +667,66 @@ paths:
       tags:
         - member
       summary: Xem chi tiết báo cáo của user thông thường
+      description: |
+        Xem chi tiết báo cáo của user thông thường
+      security:
+        - api_key: []
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: id of report
+          required: true
+          schema:
+            type: number
+            format: integer
+      responses:
+        '200':
+          description: |
+            get report success
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    required:
+                      - payload
+                    properties:
+                      payload:
+                        type: object
+                        properties:
+                          report:
+                            allOf:
+                              - $ref: '#/components/schemas/Report'
+              example:
+                code: 200
+                message: 'string'
+                payload:
+                  report:
+                    id: 1
+                    userId: 1
+                    fileId: 1
+                    content: 'string'
+                    createAt: '2022-01-01'
+                    updateAt: '2022-01-01'
+        '400':
+          description: |
+            get notice fail
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      code:
+                        enum:
+                          - 901 # Error bussiness
+                      message:
+                        enum:
+                          - Lấy báo cáo không thành công # Code 901  
+
 
 components:
   securitySchemes:
