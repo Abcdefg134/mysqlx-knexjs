@@ -847,6 +847,128 @@ paths:
                           - Content không được để trống # Code 400
                           - Cập nhật báo cáo thất bại # Code 901
 
+  /member/users/{id}/setting:
+    get:
+      tags:
+        - member
+      summary: Lấy thông tin cài đặt của người dùng
+      description:  |
+        Lấy thông tin cài đặt của người dùng
+      security:
+        - api_key:  []
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: id of user 
+          required: true
+          schema:
+            type: number
+            format: integer
+      responses:
+        '200':
+          description:  |
+            get setting success
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    required:
+                      - payload
+                    properties:
+                      payload:
+                        type: object
+                        properties:
+                          setting:
+                            allOf:
+                              - $ref: '#/components/schemas/MemberSetting'
+              example:
+                code: 200
+                message:  'string'
+                payload:
+                  setting:
+                    pushNotice: true
+                    playOnlyDuringWifi: true
+        '400':
+          description: |
+            get setting fail
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      code:
+                        enum:
+                          - 901 # Error bussiness
+                      message:
+                        enum:
+                          - Lấy thông tin cài đặt không thành công # Code 901
+    
+    put:
+      tags:
+        - member
+      summary: member cập nhật thông tin cài đặt
+      description:  |
+        member cập nhật thông tin cài đặt
+      security:
+        - api_key:  []
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: id of user 
+          required: true
+          schema:
+            type: number
+            format: integer
+      requestBody:
+        description:  |
+          thông tin cài đặt mới của user
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemberUpdateSetting'
+      responses:
+        '200':
+          description:  |
+            update setting success
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      code:
+                        enum:
+                          - 200
+                      message:
+                        enum:
+                          - Cập nhật thành công
+        '400':
+          description:  |
+            update setting fail
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      code:
+                        enum:
+                          - 901 # Error bussiness
+                      message:
+                        enum:
+                          - Cập nhật không thành công
+
+
+  
+
 components:
   securitySchemes:
     api_key:
@@ -1019,3 +1141,22 @@ components:
         content:
           type: string
           format: string
+
+    MemberSetting:
+      type: object
+      required:
+        - pushNotice
+        - playOnlyDuringWifi
+      properties:
+        pushNotice:
+          type: boolean
+        playOnlyDuringWifi:
+          type: boolean
+    
+    MemberUpdateSetting:
+      type: object
+      properties:
+        pushNotice:
+          type: boolean
+        playOnlyDuringWifi:
+          type: boolean
