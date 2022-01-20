@@ -1042,9 +1042,6 @@ paths:
                           - Lấy dữ liệu không thành công # Code 901
 
 
-      
-
-
 components:
   securitySchemes:
     api_key:
