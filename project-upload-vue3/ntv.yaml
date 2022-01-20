@@ -1158,7 +1158,7 @@ components:
         listContents:
           type: array
           items:
-            $ref: '#/components/schemas/ContentInDashboads'
+            $ref: '#/components/schemas/ContentResponse'
           minItems: 3
           maxItems: 3
         listNotices:
@@ -1168,7 +1168,7 @@ components:
           minItems: 3
           maxItems: 3
 
-    ContentInDashboads:
+    ContentResponse:
       type: object
       required:
         - id
