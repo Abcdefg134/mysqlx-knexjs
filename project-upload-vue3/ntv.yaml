@@ -639,14 +639,14 @@ paths:
                       userId: 1
                       fileId: 2
                       content: 'string'
+                      status: 'đã gửi'
                       createAt: '2022-01-02'
-                      updateAt: '2022-01-02'
                     - id: 2
                       userId: 1
                       fileId: 3
                       content: 'string'
+                      status: 'đã gửi'
                       createAt: '2022-01-02'
-                      updateAt: '2022-01-02'
         '400':
           description: |
             get notice fail
@@ -967,7 +967,7 @@ paths:
                           - Cập nhật không thành công
 
 
-  
+
 
 components:
   securitySchemes:
@@ -1122,10 +1122,10 @@ components:
         content:
           type: string
           format: string
-        createAt:
+        status:
           type: string
-          format: date
-        updateAt:
+          format: string
+        createAt:
           type: string
           format: date
     
@@ -1139,6 +1139,9 @@ components:
           type: number
           format: integer
         content:
+          type: string
+          format: string
+        status:
           type: string
           format: string
 
