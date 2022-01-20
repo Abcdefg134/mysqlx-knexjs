@@ -997,7 +997,7 @@ paths:
                         listContents:
                           - id: 3
                             title:  'string'
-                            deadline: '2022-31-01'
+                            deadline: '2022-01-31'
                             sendReport: true
                             reportStatus: 'bản nháp'
                             createAt: '2022-01-01'
@@ -1009,7 +1009,7 @@ paths:
                             createAt: '2021-12-31'
                           - id: 1
                             title:  'string'
-                            sendReport: fail
+                            sendReport: false
                             createAt: '2021-12-31'
                         listNotices:
                           - id: 5
@@ -1196,6 +1196,8 @@ components:
         createAt:
           type: string
           format: date
+    
+
 
     NoticeResult: 
       type: object
