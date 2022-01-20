@@ -502,23 +502,19 @@ paths:
                             type: array
                             items:
                               allOf:
-                                - $ref: '#/components/schemas/Notice'
+                                - $ref: '#/components/schemas/NoticeResponse'
               example:
                 code: 200
                 message: 'string'
                 payload:
                   listNotices:
                     - id: 1
-                      userId: 1
                       from: 'admin'
                       title: 'string'
-                      content: 'string'
                       createAt: "2021-01-18"
                     - id: 2
-                      userId: 1
                       from: 'super admin'
                       title: 'string'
-                      content: 'string'
                       createAt: "2021-01-18"
         '400':
           description: |
@@ -573,7 +569,7 @@ paths:
                         properties:
                           notice:
                             allOf:
-                              - $ref: '#/components/schemas/Notice'
+                              - $ref: '#/components/schemas/NoticeResult'
               example:
                 code: 200
                 message: 'string'
@@ -980,6 +976,72 @@ paths:
         - api_key:  []
         - bearerAuth: []
       responses:
+        '200':
+          description:  |
+            get dashboars success
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    required:
+                      - payload
+                    properties:
+                      payload:
+                        $ref: '#/components/schemas/DashboadsResult'
+                    example:
+                      code: 200
+                      message:  'string'
+                      payload:
+                        listContents:
+                          - id: 3
+                            title:  'string'
+                            deadline: '2022-31-01'
+                            sendReport: true
+                            reportStatus: 'bản nháp'
+                            createAt: '2022-01-01'
+                          - id: 2
+                            title:  'string'
+                            deadline: '2022-01-31'
+                            sendReport: true
+                            reportStatus: 'đã gửi'
+                            createAt: '2021-12-31'
+                          - id: 1
+                            title:  'string'
+                            sendReport: fail
+                            createAt: '2021-12-31'
+                        listNotices:
+                          - id: 5
+                            from: 'admin'
+                            title:  'string'
+                            createAt: '2022-01-18'
+                          - id: 4
+                            from: 'admin'
+                            title:  'string'
+                            createAt: '2022-01-18'
+                          - id: 3
+                            from: 'super Admin'
+                            title:  'string'
+                            createAt: '2022-01-18'
+        '400':
+          description: |
+            get dashboars fail
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      code:
+                        enum:
+                          - 901 # Error bussiness
+                      message:
+                        enum:
+                          - Lấy dữ liệu không thành công # Code 901
+
+
       
 
 
@@ -1090,14 +1152,58 @@ components:
           type: string
           format: string
 
-    Content:
+    DashboadsResult:
+      type: object
+      required:
+        - listContents
+        - listNotices
+      properties:
+        listContents:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContentInDashboads'
+          minItems: 3
+          maxItems: 3
+        listNotices:
+          type: array
+          items:
+            $ref: '#/components/schemas/NoticeResponse'
+          minItems: 3
+          maxItems: 3
 
+    ContentInDashboads:
+      type: object
+      required:
+        - id
+        - title
+        - sendReport
+        - createAt
+      properties:
+        id:
+          type: number
+          format: integer
+        title:
+          type: string
+          format: string
+        deadline:
+          type: string
+          format: date
+        sendReport:
+          type: boolean
+        reportStatus:
+          type: string
+          format: string
+        createAt:
+          type: string
+          format: date
 
-    Notice: 
+    NoticeResult: 
       type: object
       required:
         - id
         - userId
+        - title
+        - from
         - content
         - createAt
       properties:
@@ -1120,6 +1226,27 @@ components:
           type: string
           format: date
     
+    NoticeResponse:
+      type: object
+      required:
+        - id
+        - title
+        - from
+        - createAt
+      properties:
+        id:
+          type: number
+          format: integer
+        from:
+          type: string
+          format: string
+        title:
+          type: string
+          format: string
+        createAt:
+          type: string
+          format: date
+
     Report:
       type: object
       required:
