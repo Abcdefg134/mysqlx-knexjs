@@ -510,11 +510,13 @@ paths:
                   listNotices:
                     - id: 1
                       userId: 1
+                      from: 'admin'
                       title: 'string'
                       content: 'string'
                       createAt: "2021-01-18"
                     - id: 2
                       userId: 1
+                      from: 'super admin'
                       title: 'string'
                       content: 'string'
                       createAt: "2021-01-18"
@@ -579,6 +581,7 @@ paths:
                   notice:
                     id: 1
                     userId: 2
+                    from: 'admin'
                     title: 'string'
                     content: 'string'
                     createAt: '2022-01-18'
@@ -966,7 +969,18 @@ paths:
                         enum:
                           - Cập nhật không thành công
 
-
+  /member/dashboars:
+    get:
+      tags:
+        - member
+      summary:  get dashboars
+      description:  |
+        get dashboars
+      security:
+        - api_key:  []
+        - bearerAuth: []
+      responses:
+      
 
 
 components:
@@ -1076,6 +1090,9 @@ components:
           type: string
           format: string
 
+    Content:
+
+
     Notice: 
       type: object
       required:
@@ -1087,6 +1104,9 @@ components:
         id:
           type: number
           format: integer
+        from:
+          type: string
+          format: string
         userId:
           type: number
           format: integer
