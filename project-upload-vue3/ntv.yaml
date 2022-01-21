@@ -1001,7 +1001,7 @@ paths:
                             sendReport: true
                             listUserCanWatch:
                               - userId: 2
-                              - reportStatus: 'bản nháp'
+                                reportStatus: 'bản nháp'
                             createAt: '2022-01-01'
                           - id: 2
                             title:  'string'
@@ -1009,7 +1009,7 @@ paths:
                             sendReport: true
                             listUserCanWatch:
                               - userId: 2
-                              - reportStatus: 'chưa gửi'
+                                reportStatus: 'chưa gửi'
                             createAt: '2021-12-31'
                           - id: 1
                             title:  'string'
@@ -1180,7 +1180,6 @@ components:
         - title
         - sendReport
         - createAt
-        - listUserCanWatch
       properties:
         id:
           type: number
