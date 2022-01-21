@@ -1045,8 +1045,147 @@ paths:
                         enum:
                           - Lấy dữ liệu không thành công # Code 901
 
+  /member/contents:
+    get:
+      tags:
+        - member
+      summary:  member get list content
+      description:  |
+        member get list content
+      security:
+        - api_key:  []
+        - bearerAuth: []
+      responses:
+        '200':
+          description:  |
+            get list content success
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    required:
+                      - payload
+                    properties:
+                      payload:
+                        type: object
+                        properties:
+                          listContents:
+                            type: array
+                            items:
+                              allOf:
+                                - $ref: '#/components/schemas/ContentResponse'
+              example:
+                code: 200
+                message:  'string'
+                payload:
+                  listContents:
+                    - id: 3
+                      title:  'string'
+                      deadline: '2022-01-31'
+                      sendReport: true
+                      listUserCanWatch:
+                        - userId: 2
+                          reportStatus: 'bản nháp'
+                      createAt: '2022-01-01'
+                    - id: 2
+                      title:  'string'
+                      deadline: '2022-01-31'
+                      sendReport: true
+                      listUserCanWatch:
+                        - userId: 2
+                          reportStatus: 'chưa gửi'
+                      createAt: '2021-12-31'
+                    - id: 1
+                      title:  'string'
+                      sendReport: false
+                      createAt: '2021-12-31'
+        '400':
+          description: |
+            get list content fail
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      code:
+                        enum:
+                          - 901 # Error bussiness
+                      message:
+                        enum:
+                          - Lấy danh sách content không thành công # Code 901
+  
+  /member/contents/{id}:
+    get:
+      tags:
+        - member
+      summary:  member xem thông tin chi tiết content
+      description:  |
+        member xem thông tin chi tiết content
+      parameters:
+        - name: id
+          in: path
+          description: id of content
+          required: true
+          schema:
+            type: number
+            format: integer
+      responses:
+        '200':
+          description:  |
+            get content success
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    required:
+                      - payload
+                    properties:
+                      payload:
+                        type: object
+                      properties:
+                        content:
+                          allOf:
+                            - $ref: '#/components/schemas/ContentResult'
+              example:
+                code: 200
+                message:  'string'
+                payload:
+                  content:
+                    id: 1
+                    title:  'string'
+                    file_url: 'https://virtserver.swaggerhub.com/ssvietnam/NTV/1.0.0/file.mp3'
+                    description:  'string'
+                    sendReport: true
+                    deadline: '2022-01-01'
+                    listUserCanWatch:
+                      - userId: 2
+                        reportStatus: 'Đã gửi'
+                    createAt: '2021-12-20'
+        '400':
+          description: |
+            get content fail
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      code:
+                        enum:
+                          - 901 # Error bussiness
+                      message:
+                        enum:
+                          - Lấy nội dung không thành công # Code 901  
+         
 
-
+      
 components:
   securitySchemes:
     api_key:
@@ -1173,6 +1312,51 @@ components:
           minItems: 3
           maxItems: 3
 
+    ContentResult:
+      type: object
+      required:
+        - id
+        - title
+        - sendReport
+        - file_url
+        - description
+        - pushNotice
+        - valid
+        - createAt
+      properties:
+        properties:
+        id:
+          type: number
+          format: integer
+        title:
+          type: string
+          format: string
+        file_url:
+          type: string
+          format: string
+        description:
+          type: string
+          format: string
+        sendReport:
+          type: boolean
+        deadline:
+          type: string
+          format: date
+        listUserCanWatch:
+          type: array
+          items:
+              type: object
+              properties:
+                userId:
+                  type: number
+                  format: integer
+                reportStatus:
+                  type: string
+                  format: string
+        createAt:
+          type: string
+          format: date
+
     ContentResponse:
       type: object
       required:
@@ -1274,6 +1458,8 @@ components:
           type: number
           format: integer
         fileId:
+          description:  |
+            id of content in table Content
           type: number
           format: integer
         content:
