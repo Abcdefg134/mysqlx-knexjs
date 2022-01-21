@@ -999,13 +999,17 @@ paths:
                             title:  'string'
                             deadline: '2022-01-31'
                             sendReport: true
-                            reportStatus: 'bản nháp'
+                            listUserCanWatch:
+                              - userId: 2
+                              - reportStatus: 'bản nháp'
                             createAt: '2022-01-01'
                           - id: 2
                             title:  'string'
                             deadline: '2022-01-31'
                             sendReport: true
-                            reportStatus: 'đã gửi'
+                            listUserCanWatch:
+                              - userId: 2
+                              - reportStatus: 'chưa gửi'
                             createAt: '2021-12-31'
                           - id: 1
                             title:  'string'
@@ -1040,6 +1044,7 @@ paths:
                       message:
                         enum:
                           - Lấy dữ liệu không thành công # Code 901
+
 
 
 components:
@@ -1175,6 +1180,7 @@ components:
         - title
         - sendReport
         - createAt
+        - listUserCanWatch
       properties:
         id:
           type: number
@@ -1187,9 +1193,17 @@ components:
           format: date
         sendReport:
           type: boolean
-        reportStatus:
-          type: string
-          format: string
+        listUserCanWatch:
+          type: array
+          items:
+              type: object
+              properties:
+                userId:
+                  type: number
+                  format: integer
+                reportStatus:
+                  type: string
+                  format: string
         createAt:
           type: string
           format: date
