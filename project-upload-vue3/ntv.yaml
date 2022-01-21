@@ -1148,10 +1148,10 @@ paths:
                     properties:
                       payload:
                         type: object
-                      properties:
-                        content:
-                          allOf:
-                            - $ref: '#/components/schemas/ContentResult'
+                        properties:
+                          content:
+                            allOf:
+                              - $ref: '#/components/schemas/ContentResult'
               example:
                 code: 200
                 message:  'string'
@@ -1324,7 +1324,6 @@ components:
         - valid
         - createAt
       properties:
-        properties:
         id:
           type: number
           format: integer
