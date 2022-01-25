@@ -1083,22 +1083,19 @@ paths:
                   listContents:
                     - id: 3
                       title:  'string'
+                      contentType: 'video'
                       deadline: '2022-01-31'
                       sendReport: true
-                      listUserCanWatch:
-                        - userId: 2
-                          reportStatus: 'bản nháp'
                       createAt: '2022-01-01'
                     - id: 2
                       title:  'string'
+                      contentType: 'audio'
                       deadline: '2022-01-31'
                       sendReport: true
-                      listUserCanWatch:
-                        - userId: 2
-                          reportStatus: 'chưa gửi'
                       createAt: '2021-12-31'
                     - id: 1
                       title:  'string'
+                      contentType: 'text'
                       sendReport: false
                       createAt: '2021-12-31'
         '400':
@@ -1159,13 +1156,11 @@ paths:
                   content:
                     id: 1
                     title:  'string'
-                    file_url: 'https://virtserver.swaggerhub.com/ssvietnam/NTV/1.0.0/file.mp3'
+                    contentType: 'audio'
+                    contentUrl: 'https://virtserver.swaggerhub.com/ssvietnam/NTV/1.0.0/file.mp3'
                     description:  'string'
                     sendReport: true
                     deadline: '2022-01-01'
-                    listUserCanWatch:
-                      - userId: 2
-                        reportStatus: 'Đã gửi'
                     createAt: '2021-12-20'
         '400':
           description: |
@@ -1183,7 +1178,7 @@ paths:
                       message:
                         enum:
                           - Lấy nội dung không thành công # Code 901  
-         
+                          
 
       
 components:
