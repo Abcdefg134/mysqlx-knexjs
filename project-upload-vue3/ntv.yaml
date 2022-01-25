@@ -8,11 +8,8 @@ info:
     email: k.ryu@saishunkansys.com
 servers:
   # Added by API Auto Mocking Plugin
-  # Added by API Auto Mocking Plugin
   - description: SwaggerHub API Auto Mocking
     url: https://virtserver.swaggerhub.com/ssvietnam/NTV/1.0.0
-  - description: SwaggerHub API Auto Mocking
-    url: https://virtserver.swaggerhub.com/ssvietnam/ntv/1.0.0
 tags:
   - name: admin
     description: api for admin
@@ -406,7 +403,7 @@ paths:
                           - Email không được để trống # Code 400
                           - Email không đúng định dạng # Code 400
                           - Gửi yêu cầu không thành công # Code 901
-  
+
   /member/user/{id}/change-password:
     put:
       tags:
@@ -417,13 +414,12 @@ paths:
       security:
         - api_key: []
       parameters:
-        - name: id
-          in: path
-          description: id of user 
-          required: true
-          schema:
-            type: number
-            format: integer
+      - name: id
+        in: path
+        description: id of user 
+        required: true
+        schema:
+          type: string
       requestBody:
         description: |
           Change password body
@@ -464,14 +460,77 @@ paths:
                           - 400 # Input not valid
                       message:
                         enum:
-                          - Mật khẩu mới không được để trống # Code 400
-                          - Mật khẩu mới không đúng định dạng # Code 400
-                          - Mật khẩu hiện tại không được để trống # Code 400
-                          - Mật khẩu hiện tại không đúng định dạng # Code 400
+                          - Mật khẩu không được để trống # Code 400
+                          - Mật khẩu không đúng định dạng # Code 400
                           - Link không hợp lệ # Code 400
                           - Link đã hết hạn # Code 400
                           - Đổi mật khẩu thất bại # Code 901
-                      
+
+  /member/users/{id}:
+    put:
+      tags:
+        - member
+      summary: Thay đổi thông tin người dùng thông thường
+      description: |
+        Thay đổi password hoặc email của người dùng thông thường dựa vào loại request. |
+        type = 1 là thay đổi password, type = 2 là thay đổi email
+      security:
+        - api_key: []
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: id of user 
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: |
+          Change password body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemberChange'
+      responses:
+        '200':
+          description: |
+            Change password success
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      code:
+                        enum:
+                          - 200
+                      message: 
+                        enum:
+                          - Đổi thông tin người dùng thành công
+        '400':
+          description: |
+            Change password fail
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse'
+                  - type: object
+                    properties:
+                      code:
+                        enum:
+                          - 901 # Error bussiness
+                          - 400 # Input not valid
+                      message:
+                        enum:
+                          - Mật khẩu không được để trống # Code 400
+                          - Mật khẩu mới không được để trống # Code 400
+                          - Mật khẩu mới không đúng định dạng # Code 400
+                          - Email không được để trống # Code 400
+                          - Email không đúng định dạng # Code 400
+                          - Email không hợp lệ # Code 400
+                          - Đổi mật khẩu thất bại # Code 901
   /member/notices:
     get:
       tags:
@@ -576,7 +635,6 @@ paths:
                 payload:
                   notice:
                     id: 1
-                    userId: 2
                     from: 'admin'
                     title: 'string'
                     content: 'string'
@@ -636,16 +694,16 @@ paths:
                   listReports:
                     - id: 1
                       userId: 1
-                      fileId: 2
-                      content: 'string'
+                      contentTitle: 'string'
+                      contentReport: 'string'
                       status: 'đã gửi'
-                      createAt: '2022-01-02'
+                      createAt: '2022-01-02 18:30'
                     - id: 2
                       userId: 1
-                      fileId: 3
-                      content: 'string'
+                      contentTitle: 'string'
+                      contentReport: 'string'
                       status: 'đã gửi'
-                      createAt: '2022-01-02'
+                      createAt: '2022-01-02 18:30'
         '400':
           description: |
             get notice fail
@@ -674,7 +732,7 @@ paths:
         - bearerAuth: []
       requestBody:
         description:  |
-          nội dung báo cáo và fileId
+          nội dung báo cáo và contentid
         content:
           application/json:
             schema:
@@ -760,10 +818,10 @@ paths:
                   report:
                     id: 1
                     userId: 1
-                    fileId: 1
-                    content: 'string'
-                    createAt: '2022-01-01'
-                    status: 'bản nháp'
+                    contentTitle: 'string'
+                    contentReport: 'string'
+                    createAt: '2022-01-01 18:30'
+                    status: 'Bản nháp'
         '400':
           description: |
             get notice fail
@@ -805,9 +863,9 @@ paths:
           application/json:
             schema:
               required:
-                - newContent
+                - contentReport
               properties:
-                newContent:
+                contentReport:
                     type: string
                     format: string
       responses:
@@ -890,6 +948,11 @@ paths:
                   setting:
                     pushNotice: true
                     playOnlyDuringWifi: true
+                    companyName:  'string'
+                    username: 'string'
+                    appVersion:
+                      type: 'android'
+                      version:  '1.0.1'
         '400':
           description: |
             get setting fail
@@ -997,23 +1060,22 @@ paths:
                         listContents:
                           - id: 3
                             title:  'string'
-                            deadline: '2022-01-31'
-                            sendReport: true
-                            listUserCanWatch:
-                              - userId: 2
-                                reportStatus: 'bản nháp'
+                            contentType:  'video'
+                            deadline: '2022-01-01'
+                            imgUrl: 'https://virtserver.swaggerhub.com/ssvietnam/NTV/1.0.0/img.png'
+                            reportStatus: 'Hết hạn'
                             createAt: '2022-01-01'
                           - id: 2
                             title:  'string'
+                            contentType:  'audio'
                             deadline: '2022-01-31'
-                            sendReport: true
-                            listUserCanWatch:
-                              - userId: 2
-                                reportStatus: 'chưa gửi'
+                            imgUrl: 'https://virtserver.swaggerhub.com/ssvietnam/NTV/1.0.0/img.png'
+                            reportStatus: 'Đã gửi'
                             createAt: '2021-12-31'
                           - id: 1
                             title:  'string'
-                            sendReport: false
+                            contentType:  'text'
+                            reportStatus: 'Không cần gửi'
                             createAt: '2021-12-31'
                         listNotices:
                           - id: 5
@@ -1084,19 +1146,22 @@ paths:
                     - id: 3
                       title:  'string'
                       contentType: 'video'
+                      imgUrl: 'https://virtserver.swaggerhub.com/ssvietnam/NTV/1.0.0/img.png'
                       deadline: '2022-01-31'
-                      sendReport: true
+                      reportStatus: 'Chưa gửi'
                       createAt: '2022-01-01'
                     - id: 2
                       title:  'string'
                       contentType: 'audio'
+                      imgUrl: 'https://virtserver.swaggerhub.com/ssvietnam/NTV/1.0.0/img.png'
                       deadline: '2022-01-31'
-                      sendReport: true
+                      reportStatus: 'Đã gửi'
                       createAt: '2021-12-31'
                     - id: 1
                       title:  'string'
                       contentType: 'text'
-                      sendReport: false
+                      imgUrl: 'https://virtserver.swaggerhub.com/ssvietnam/NTV/1.0.0/img.png'
+                      reportStatus: 'Không cần gửi'
                       createAt: '2021-12-31'
         '400':
           description: |
@@ -1155,13 +1220,18 @@ paths:
                 payload:
                   content:
                     id: 1
+                    tag:  'string'
                     title:  'string'
                     contentType: 'audio'
                     contentUrl: 'https://virtserver.swaggerhub.com/ssvietnam/NTV/1.0.0/file.mp3'
+                    imgUrl: 'https://virtserver.swaggerhub.com/ssvietnam/NTV/1.0.0/img.png'
+                    duration: '33m 43s'
                     description:  'string'
-                    sendReport: true
-                    deadline: '2022-01-01'
-                    createAt: '2021-12-20'
+                    reportStatus: 'Hết hạn'
+                    fistView: '2021-01-01 18:30'
+                    lastView: '2021-01-01 18:30'
+                    deadline: '2022-01-01 18:30'
+                    createAt: '2021-12-20 18:30'
         '400':
           description: |
             get content fail
@@ -1179,8 +1249,6 @@ paths:
                         enum:
                           - Lấy nội dung không thành công # Code 901  
                           
-
-      
 components:
   securitySchemes:
     api_key:
@@ -1194,6 +1262,7 @@ components:
   schemas:
   # mail: '/^[\w.!#$%&’*+\/=?^`{|}-]+@[\w-]+(?:\.[\w-]+)*\b/'
   # date: '/^(\d{4})\/(0[1-9]|1[0-2])\/(0[1-9]|[1-2][0-9]|3[0-1])$/'
+  # dateTime: '/^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01]) (00|[0-9]|1[0-9]|2[0-3]):([0-9]|[0-5][0-9])$/'
   # status: '/^[0-9]{1}/'
     CommonResponse:
       $ref: '#/components/schemas/CommonResult'
@@ -1257,7 +1326,7 @@ components:
         email:
           type: string
           format: mail
-    
+  
     MemberForgetPassword:
       type: object
       required:
@@ -1272,148 +1341,49 @@ components:
     MemberChangePassword:
       type: object
       required:
-        - currentPassword
         - newPassword
         - token
       properties:
-        currentPassword:
-          type: string
-          minLength:  8
-          maxLength:  16
         newPassword:
           type: string
-          minLength:  8
-          maxLength:  16
+          minLength: 8
+          maxLength: 16
         token:
           type: string
           format: string
-
-    DashboadsResult:
-      type: object
-      required:
-        - listContents
-        - listNotices
-      properties:
-        listContents:
-          type: array
-          items:
-            $ref: '#/components/schemas/ContentResponse'
-          minItems: 3
-          maxItems: 3
-        listNotices:
-          type: array
-          items:
-            $ref: '#/components/schemas/NoticeResponse'
-          minItems: 3
-          maxItems: 3
-
-    ContentResult:
-      type: object
-      required:
-        - id
-        - title
-        - sendReport
-        - file_url
-        - description
-        - pushNotice
-        - valid
-        - createAt
-      properties:
-        id:
-          type: number
-          format: integer
-        title:
-          type: string
-          format: string
-        file_url:
-          type: string
-          format: string
-        description:
-          type: string
-          format: string
-        sendReport:
-          type: boolean
-        deadline:
-          type: string
-          format: date
-        listUserCanWatch:
-          type: array
-          items:
-              type: object
-              properties:
-                userId:
-                  type: number
-                  format: integer
-                reportStatus:
-                  type: string
-                  format: string
-        createAt:
-          type: string
-          format: date
-
-    ContentResponse:
-      type: object
-      required:
-        - id
-        - title
-        - sendReport
-        - createAt
-      properties:
-        id:
-          type: number
-          format: integer
-        title:
-          type: string
-          format: string
-        deadline:
-          type: string
-          format: date
-        sendReport:
-          type: boolean
-        listUserCanWatch:
-          type: array
-          items:
-              type: object
-              properties:
-                userId:
-                  type: number
-                  format: integer
-                reportStatus:
-                  type: string
-                  format: string
-        createAt:
-          type: string
-          format: date
     
-    NoticeResult: 
+    MemberChange:
       type: object
       required:
-        - id
-        - userId
-        - title
-        - from
-        - content
-        - createAt
+        - type
+        - password # type = 1
+        - newPassword # type = 1
+        - email # type = 2
       properties:
-        id:
+        type:
           type: number
           format: integer
-        from:
+          enum:
+            - 1 # Thay đổi mật khẩu
+            - 2 # Thay đổi email
+        password:
+          description: |
+          
           type: string
-          format: string
-        userId:
-          type: number
-          format: integer
-        title:
+          format: password
+          maxLength: 16
+          minLength: 8
+        newPassword:
+          description: |
+          
           type: string
-          format: string
-        content:
+          format: password
+          maxLength: 16
+          minLength: 8
+        email:
           type: string
-          format: string
-        createAt:
-          type: string
-          format: date
-    
+          format: mail
+
     NoticeResponse:
       type: object
       required:
@@ -1435,13 +1405,38 @@ components:
           type: string
           format: date
 
+    NoticeResult: 
+      type: object
+      required:
+        - id
+        - title
+        - from
+        - content
+        - createAt
+      properties:
+        id:
+          type: number
+          format: integer
+        from:
+          type: string
+          format: string
+        title:
+          type: string
+          format: string
+        content:
+          type: string
+          format: string
+        createAt:
+          type: string
+          format: date
+
     Report:
       type: object
       required:
         - id
         - userId
-        - fileId
-        - content
+        - contentTitle
+        - contentReport
         - createAt
         - status
       properties:
@@ -1451,12 +1446,10 @@ components:
         userId:
           type: number
           format: integer
-        fileId:
-          description:  |
-            id of content in table Content
-          type: number
-          format: integer
-        content:
+        contentTitle:
+          type: string
+          format: string
+        contentReport:
           type: string
           format: string
         status:
@@ -1472,10 +1465,10 @@ components:
         - fileId
         - content
       properties:
-        fileId:
+        contentId:
           type: number
           format: integer
-        content:
+        contentReport:
           type: string
           format: string
         status:
@@ -1487,11 +1480,29 @@ components:
       required:
         - pushNotice
         - playOnlyDuringWifi
+        - companyName
+        - username
+        - appVersion
       properties:
         pushNotice:
           type: boolean
         playOnlyDuringWifi:
           type: boolean
+        companyName:
+          type: string
+          format: string
+        username:
+          type: string
+          format: string
+        appVersion:
+          type: object
+          properties:
+            type:
+              type: string
+              format: string
+            version:
+              type: string
+              format: string
     
     MemberUpdateSetting:
       type: object
@@ -1500,3 +1511,128 @@ components:
           type: boolean
         playOnlyDuringWifi:
           type: boolean
+  
+    DashboadsResult:
+      type: object
+      required:
+        - listContents
+        - listNotices
+      properties:
+        listContents:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContentResponse'
+          minItems: 3
+          maxItems: 3
+        listNotices:
+          type: array
+          items:
+            $ref: '#/components/schemas/NoticeResponse'
+          minItems: 3
+          maxItems: 3
+
+    ContentResponse:
+      type: object
+      required:
+        - id
+        - title
+        - reportStatus
+        - createAt
+        - contentType
+      properties:
+        id:
+          type: number
+          format: integer
+        title:
+          type: string
+          format: string
+        imgUrl:
+          type: string
+          format: string
+        contentType:
+          type: string
+          format: string
+          enum:
+            - 'video'
+            - 'audio'
+            - 'text'
+        deadline:
+          type: string
+          format: date
+        reportStatus:
+          type: string
+          format: string
+          enum:
+            - 'Không cần gửi'
+            - 'Quá hạn'
+            - 'Không thời hạn'
+            - 'Chưa gửi'
+            - 'Đã gửi'
+        createAt:
+          type: string
+          format: date
+    
+    ContentResult:
+      type: object
+      required:
+        - id
+        - title
+        - tag
+        - reportStatus
+        - contentUrl
+        - contentType
+        - description
+        - createAt
+      properties:
+        id:
+          type: number
+          format: integer
+        tag:
+          type: string
+          format: string
+        duration:
+          type: string
+          format: string
+        title:
+          type: string
+          format: string
+        contentType:
+          type: string
+          format: string
+          enum:
+            - 'video'
+            - 'audio'
+            - 'text'
+        fistView:
+          type: string
+          format: date
+        lastView:
+          type: string
+          format: date
+        imgUrl:
+          type: string
+          format: string
+        contentUrl:
+          type: string
+          format: string
+        description:
+          type: string
+          format: string
+        reportStatus:
+          type: string
+          format: string
+          enum:
+            - 'Không cần gửi'
+            - 'Chưa gửi'
+            - 'Không thời hạn'
+            - 'Hết hạn'
+            - 'Đã gửi'
+        deadline:
+          type: string
+          format: date
+        dateSubmission:
+          type: string
+          format: date
+        createAt:
+          type: string
+          format: date
